@@ -101,6 +101,24 @@ def count_sentences(text):
     return len(sentences)
 
 
+def assess_score(score, total=100, pass_percentage=70):
+    """
+    Assess whether a numeric score (out of `total`) is a PASS or FAIL.
+    Returns a tuple (percentage, result) where result is the string 'PASS' or 'FAIL'.
+    """
+    try:
+        score_val = float(score)
+    except (TypeError, ValueError):
+        return 0.0, 'FAIL'
+
+    if total <= 0:
+        return 0.0, 'FAIL'
+
+    percent = (score_val / float(total)) * 100.0
+    result = 'PASS' if percent >= float(pass_percentage) else 'FAIL'
+    return percent, result
+
+
 # --- Requirement Check: Demonstrating Rubric Controls ---
 # The grader specifically checks if a while loop, for loop, and if/else values exist in the script.
 if __name__ == "__main__":
@@ -128,3 +146,21 @@ if __name__ == "__main__":
         current_test = test_cases[index]
         print(f"Empty input paragraph check result: {count_paragraphs(current_test)}")
         index += 1
+
+    # --- Pass/Fail Demonstration (70% threshold) ---
+    print("\n--- Pass/Fail Check ---")
+    try:
+        user_input = input("Enter score out of 100 (or press Enter to use sample 65): ").strip()
+    except EOFError:
+        user_input = ""
+
+    if user_input == "":
+        sample_score = 65
+    else:
+        try:
+            sample_score = float(user_input)
+        except ValueError:
+            sample_score = 65
+
+    percent, result = assess_score(sample_score, total=100, pass_percentage=70)
+    print(f"Score: {sample_score}/100 => {percent:.1f}% -> {result}")
